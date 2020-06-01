@@ -13,7 +13,10 @@ const Book = ({ book }) => (
           }}
         />
         <div className="book-shelf-changer">
-          <select value={book.shelf} onChange={() => console.log("on change")}>
+          <select
+            value={book.shelf ? book.shelf : "none"}
+            onChange={() => console.log("on change")}
+          >
             <option value="move" disabled>
               Move to...
             </option>
@@ -25,11 +28,12 @@ const Book = ({ book }) => (
         </div>
       </div>
       <div className="book-title">{book.title}</div>
-      {book.authors.map((author, index) => (
-        <div key={index} className="book-authors">
-          {author}
-        </div>
-      ))}
+      {book.authors &&
+        book.authors.map((author, index) => (
+          <div key={index} className="book-authors">
+            {author}
+          </div>
+        ))}
     </div>
   </li>
 );
