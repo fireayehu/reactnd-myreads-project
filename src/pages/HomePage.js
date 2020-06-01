@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import BooksShelf from "../components/BooksShelf";
-const HomePage = ({ handleShow, books }) => (
+
+const HomePage = ({ books }) => (
   <div className="list-books">
     <div className="list-books-title">
       <h1>MyReads</h1>
@@ -13,9 +15,9 @@ const HomePage = ({ handleShow, books }) => (
         <BooksShelf title="Read" books={books.read} />
       </div>
     </div>
-    <div className="open-search">
-      <button onClick={handleShow}>Add a book</button>
-    </div>
+    <Link className="open-search" to="/search">
+      <button>Add a book</button>
+    </Link>
   </div>
 );
 

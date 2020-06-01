@@ -1,9 +1,11 @@
 import React from "react";
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
+import { Switch, Route } from "react-router-dom";
 
 import AddBookPage from "./pages/AddBookPage";
 import HomePage from "./pages/HomePage";
+
 class BooksApp extends React.Component {
   state = {
     /**
@@ -17,7 +19,6 @@ class BooksApp extends React.Component {
       wantToRead: [],
       read: [],
     },
-    showSearchPage: false,
   };
   componentDidMount() {
     BooksAPI.getAll().then((books) => this.categorizeBooks(books));
@@ -35,16 +36,14 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <AddBookPage
-            handleShow={() => this.setState({ showSearchPage: false })}
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => <HomePage books={this.state.books} />}
           />
-        ) : (
-          <HomePage
-            handleShow={() => this.setState({ showSearchPage: true })}
-            books={this.state.books}
-          />
-        )}
+          <Route exact path="/search" render={() => <AddBookPage />} />
+        </Switch>
       </div>
     );
   }
