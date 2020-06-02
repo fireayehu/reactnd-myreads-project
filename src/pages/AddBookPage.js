@@ -8,13 +8,13 @@ import Book from "../components/Book";
 class AddBookPage extends Component {
   state = {
     query: "",
-    books: [],
+    searchedBooks: [],
   };
 
   searchBooks = () => {
     if (this.state.query !== "") {
       BooksAPI.search(this.state.query).then((books) => {
-        this.setState({ books: books.error ? [] : books });
+        this.setState({ searchedBooks: books.error ? [] : books });
       });
     } else {
       this.setState({ books: [] });
@@ -36,9 +36,19 @@ class AddBookPage extends Component {
         <SearchBar handleChange={this.handleChange} query={this.state.query} />
         <div className="search-books-results">
           <ol className="books-grid">
-            {this.state.books.map((book) => (
-              <Book key={book.id} book={book} />
-            ))}
+            {this.state.searchedBooks.map((book) => {
+              const exists = this.props.books.find((b) => b.id === book.id);
+              if (exists) {
+                book.shelf = exists.shelf;
+              }
+              return (
+                <Book
+                  key={book.id}
+                  book={book}
+                  updateBookShelf={this.props.updateBookShelf}
+                />
+              );
+            })}
           </ol>
         </div>
       </div>

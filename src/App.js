@@ -8,25 +8,31 @@ import HomePage from "./pages/HomePage";
 
 class BooksApp extends React.Component {
   state = {
-    books: {
-      currentlyReading: [],
-      wantToRead: [],
-      read: [],
-    },
+    books: [],
+  };
+  updateBookShelf = (book, shelf) => {
+    BooksAPI.update(book, shelf).then(() => {
+      const exists = this.state.books.find((b) => b.id === book.id);
+      book.shelf = shelf;
+      if (exists) {
+        this.setState((prevState) => ({
+          books: [...prevState.books.map((b) => (b.id === book.id ? book : b))],
+        }));
+      } else {
+        this.setState((prevState) => ({
+          books: [...prevState.books, book],
+        }));
+      }
+    });
   };
   componentDidMount() {
-    BooksAPI.getAll().then((books) => this.categorizeBooks(books));
+    BooksAPI.getAll().then((books) =>
+      this.setState({
+        books,
+      })
+    );
   }
 
-  categorizeBooks(books) {
-    const currentBookState = { ...this.state.books };
-    for (let book of books) {
-      currentBookState[book.shelf].push(book);
-    }
-    this.setState(() => ({
-      books: currentBookState,
-    }));
-  }
   render() {
     return (
       <div className="app">
@@ -34,9 +40,23 @@ class BooksApp extends React.Component {
           <Route
             exact
             path="/"
-            render={() => <HomePage books={this.state.books} />}
+            render={() => (
+              <HomePage
+                books={this.state.books}
+                updateBookShelf={this.updateBookShelf}
+              />
+            )}
           />
-          <Route exact path="/search" render={() => <AddBookPage />} />
+          <Route
+            exact
+            path="/search"
+            render={() => (
+              <AddBookPage
+                updateBookShelf={this.updateBookShelf}
+                books={this.state.books}
+              />
+            )}
+          />
         </Switch>
       </div>
     );
