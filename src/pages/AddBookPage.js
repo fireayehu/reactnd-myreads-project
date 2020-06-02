@@ -12,12 +12,15 @@ class AddBookPage extends Component {
   };
 
   searchBooks = () => {
-    if (this.state.query !== "") {
-      BooksAPI.search(this.state.query).then((books) => {
-        this.setState({ searchedBooks: books.error ? [] : books });
+    const query = this.state.query.trim();
+    if (query !== "") {
+      BooksAPI.search(query).then((books) => {
+        if (query === this.state.query) {
+          this.setState({ searchedBooks: books.error ? [] : books });
+        }
       });
     } else {
-      this.setState({ books: [] });
+      this.setState({ searchedBooks: [] });
     }
   };
   handleChange = (event) => {
